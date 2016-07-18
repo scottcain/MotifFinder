@@ -11,7 +11,7 @@ return declare( Component,
         this.name = args.name;
         this.cssLoaded = args.cssLoaded;
         this._finalizeConfig( args.config );
-        console.log('loading RestrictionSearch pluging');
+        console.log('loading MotifFinder pluging');
     },
 
     _defaultConfig: function() {
@@ -22,7 +22,7 @@ return declare( Component,
 });
 });
 },
-'RestrictionSearch/View/SearchSeqDialog':function(){
+'MotifFinder/View/SearchSeqDialog':function(){
 define([
         'dojo/_base/declare',
         'dojo/dom-construct',
@@ -61,16 +61,16 @@ return declare( ActionBarDialog, {
 
         var introdiv = dom.create('div', {
             className: 'search-dialog intro',
-            innerHTML: 'This tool creates a track showing the location of the selected restriction site.'
+            innerHTML: 'This tool uses a Position Weight Matrix to find sequence motifs'
         }, container );
 
-        // Render enzyme select 
+        // Render matrix select 
         var selectDiv = dom.create('div', {
             className: "section"
         }, container );
 
-        content.enzyme = new dSelect({
-        name: "select_enzyme",
+        content.matrix = new dSelect({
+        name: "select_matrix",
         options: [
             { label: "EcoRI", value: "GAATTC" },
             { label: "Acc36I", value: "ACCTGC"},
@@ -79,8 +79,8 @@ return declare( ActionBarDialog, {
             { label: "AlfI", value: "GCA([ATCGN]{6})TGC" }
            ]
         })
-        selectDiv.appendChild( content.enzyme.domNode );
-        dom.create( "label", { "for": "select_enzyme", innerHTML: "Select enzyme"}, selectDiv );
+        selectDiv.appendChild( content.matrix.domNode );
+        dom.create( "label", { "for": "select_matrix", innerHTML: " Select matrix"}, selectDiv );
 
         return container;
     },
@@ -88,8 +88,7 @@ return declare( ActionBarDialog, {
     _getSearchParams: function() {
         var content = this.content;
         return {
-            enzyme: content.enzyme.get('value'),
-            enzymeLabel: content.enzyme.get('displayedValue'),
+            matrix: content.matrix.get('value'),
             maxLen: 100
         };
     },
@@ -120,7 +119,7 @@ return declare( ActionBarDialog, {
 
     show: function ( callback ) {
         this.callback = callback || function() {};
-        this.set( 'title', "Add sequence search track");
+        this.set( 'title', "Add motif search track");
         this.set( 'content', this._dialogContent() );
         this.inherited( arguments );
         focus.focus( this.closeButtonNode );
@@ -129,7 +128,7 @@ return declare( ActionBarDialog, {
 });
 });
 },
-'RestrictionSearch/Store/SeqFeature/RestrictionSearch':function(){
+'MotifFinder/Store/SeqFeature/MotifFinder':function(){
 define([
         'dojo/_base/declare',
         'dojo/_base/array',
@@ -196,7 +195,7 @@ define([
 
         doSearch: function( query, sequence, params, featCallback ) {
             var expr = new RegExp(
-                params.enzyme,
+                params.motif,
                 "gi" //used to be case ignore
             );
 
@@ -244,7 +243,7 @@ define([
     });
 });
 }}});
-define("RestrictionSearch/main", [
+define("MotifFinder/main", [
            'dojo/_base/declare',
            'dojo/_base/lang',
            'dojo/Deferred',
@@ -269,7 +268,7 @@ return declare( JBrowsePlugin,
         this.browser.afterMilestone('initView', function() {
             this.browser.addGlobalMenuItem( 'file', new dijitMenuItem(
                                            {
-                                               label: 'Add restriction enzyme search track',
+                                               label: 'Add motif search track',
                                                iconClass: 'dijitIconBookmark',
                                                onClick: lang.hitch(this, 'createSearchTrack')
                                            }));
@@ -289,7 +288,7 @@ return declare( JBrowsePlugin,
                 var storeConf = {
                     browser: thisB.browser,
                     refSeq: thisB.browser.refSeq,
-                    type: 'RestrictionSearch/Store/SeqFeature/RestrictionSearch',
+                    type: 'MotifFinder/Store/SeqFeature/MotifFinder',
                     searchParams: searchParams
                 };
                 var storeName = thisB.browser.addStoreConfig( undefined, storeConf );
@@ -297,10 +296,10 @@ return declare( JBrowsePlugin,
                 var searchTrackConfig = {
                     type: 'JBrowse/View/Track/CanvasFeatures',
                     label: 'search_track_' + (thisB._searchTrackCount++),
-                    key: "Search reference sequence for '"+ searchParams.enzymeLabel + " (" + searchParams.enzyme + ")'",
+                    key: "Search reference sequence for '"+ searchParams.motif ,
                     metadata: {
                         category: 'Local tracks',
-                        Description: "Contains all matches of the restriction site '" + storeConf.searchExpr + "'"
+                        Description: "Contains all motifs that match with the PWM '" + searchParams.motif + "'"
                     },
                     store: storeName
                 };
