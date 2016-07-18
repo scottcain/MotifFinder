@@ -1,2 +1,2 @@
-# RestrictionSearch
-Restriction enzyme search plugin for JBrowse
+# MotifFinder 
+JBrowse plugin - Finds sequence motifs with a Position Weight Matrix
