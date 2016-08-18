@@ -29,3 +29,19 @@
 .search-dialog .dijitTextBox * {
     font-size: 110%;
 }
+
+.search-dialog .flex-container {
+    flex: 1;
+    display: flex;
+    width: 90%;
+    margin: 5px;
+}
+
+.colone {
+    width: 50%;
+}
+.coltwo {
+    width: 50%;
+}
+
+
