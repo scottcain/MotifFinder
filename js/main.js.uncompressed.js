@@ -31,6 +31,7 @@ define([
         'dijit/form/Button',
         'dijit/form/CheckBox',
         'dijit/form/RadioButton',
+        'dijit/form/TextBox',
         'dijit/form/Select',
         'JBrowse/View/Dialog/WithActionBar'
     ],
@@ -42,6 +43,7 @@ define([
         dButton,
         dCheckBox,
         dRadioButton,
+        dTextBox,
         dSelect,
         ActionBarDialog
     ) {
@@ -63,7 +65,7 @@ return declare( ActionBarDialog, {
 
         var introdiv = dom.create('div', {
             className: 'search-dialog intro',
-            innerHTML: 'This tool creates a track showing the location the identified motif.'
+            innerHTML: 'This tool creates a track showing locations of the identified motif.'
         }, container );
 
         // Render enzyme select 
@@ -639,6 +641,12 @@ return declare( ActionBarDialog, {
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocoltwo);
         }
 
+        var minscoreDiv = dom.create('div', {className: 'section'}, container);
+
+        content.minscorefield = new dTextBox( {name: 'minscore', label: 'minscore', style: 'width: 4em;'}, minscoreDiv  ); 
+        //minscoreDiv.appendChild(content.minscorefield.domNode);
+        dom.create( "label", {"for" : "minscore", innerHTML: "Minimum score"}, minscoreDiv);
+
         return container;
     },
 
@@ -659,14 +667,16 @@ return declare( ActionBarDialog, {
             }
         }
 
-        //console.log(matrixC);
+        var min_score = isNaN(content.minscorefield.get('value'))
+                       ? 2 : content.minscorefield.get('value');
 
         return {
             matrix: selected,
             matrix_A: matrixA,
             matrix_C: matrixC,
             matrix_G: matrixG,
-            matrix_T: matrixT 
+            matrix_T: matrixT,
+            minscore: min_score
         };
     },
 
@@ -795,7 +805,7 @@ define([
                 }
             }
 
-            var min_score = 1.2 //will want a widget to adjust this
+            var min_score = params.minscore;
 
             var sequences = [];
             sequences.push( [sequence,1] );
@@ -846,12 +856,12 @@ define([
                 //console.log(score);
 
                 if (score > min_score) {
-                    console.log('creating feature');
+                    // console.log('creating feature');
                     var result   = substr;
                     var newStart = strand>0 ? start + i       : end - (i+len);
                     var newEnd   = strand>0 ? start + (i+len) : end - i;
 
-                    console.log(newStart + ' ' + newEnd);
+                    //console.log(newStart + ' ' + newEnd);
 
                     var newFeat = new SimpleFeature(
                       {
@@ -943,10 +953,10 @@ return declare( JBrowsePlugin,
                 var searchTrackConfig = {
                     type: 'JBrowse/View/Track/CanvasFeatures',
                     label: 'search_track_' + (thisB._searchTrackCount++),
-                    key: "Search reference sequence for '"+ searchParams.enzymeLabel + " (" + searchParams.enzyme + ")'",
+                    key: "Search reference sequence for '"+ searchParams.matrix + " (min score:" + searchParams.minscore + ")'",
                     metadata: {
                         category: 'Local tracks',
-                        Description: "Contains all matches of the restriction site '" + storeConf.searchExpr + "'"
+                        Description: "Contains all matches of the motif '" + searchParams.matrix + "'"
                     },
                     store: storeName
                 };
