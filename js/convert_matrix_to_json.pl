@@ -19,13 +19,18 @@ for (my $i=0;$i<scalar @lines;$i=$i+5) {
     $lines[$i+3] =~ s/\t/ /g;
     $lines[$i+4] =~ s/\t/ /g;
 
+    $lines[$i+1] =~ s/\s+/,/g;
+    $lines[$i+2] =~ s/\s+/,/g;
+    $lines[$i+3] =~ s/\s+/,/g;
+    $lines[$i+4] =~ s/\s+/,/g;
+
     print "      {\n";
     print "         \"name\" : \"$lines[$i]\",\n";
     print "         \"matrix\" : {\n";
-    print "            \"A\" : \"$lines[$i+1]\",\n";
-    print "            \"C\" : \"$lines[$i+2]\",\n";
-    print "            \"G\" : \"$lines[$i+3]\",\n";
-    print "            \"T\" : \"$lines[$i+4]\"\n";
+    print "            \"A\" : [$lines[$i+1]],\n";
+    print "            \"C\" : [$lines[$i+2]],\n";
+    print "            \"G\" : [$lines[$i+3]],\n";
+    print "            \"T\" : [$lines[$i+4]]\n";
     print "         }\n";
     print "      },\n";
 }
