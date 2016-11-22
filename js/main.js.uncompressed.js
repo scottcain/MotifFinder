@@ -678,6 +678,7 @@ return declare( ActionBarDialog, {
         var matrixA,matrixC,matrixT,matrixG;
         for (var i =0;i<content.matrices.length ; i++) {
             var name = content.matrices[i].name;
+            console.log(name);
             if (content.matrixbutton[name].checked) {
                 selected = name;
                 matrixA = content.matrices[i].matrix['A'];
@@ -688,9 +689,31 @@ return declare( ActionBarDialog, {
             }
         }
 
+        if (content.custommatrixnamefield.get('value')) {
+            selected = content.custommatrixnamefield.get('value');
+            var custommatrix = [content.custommatrixafield.get('value'), 
+                                content.custummatrixcfield.get('value'),
+                                content.custommatrixgfield.get('value'),
+                                content.custommatrixtfield.get('value')];
+            var newarray = {};
+            for (var i=0;i<custommatrix.length; i++) {
+                if (custommatrix[i].indexOf(':') >=0 ) { //eliminate leading label if present
+                    custommatrix[i] = customermatrix[i].substring(custommatrix[i].indexOf(':')+1); 
+                }
+
+                newarray[i]=custommatrix[i].split(','); 
+            }
+            matrixA = newarray[0];
+            matrixC = newarray[1];
+            matrixG = newarray[2];
+            matrixT = newarray[3];
+        }
+
         console.log(matrixA);
 
-        var min_score = isNaN(content.minscorefield.get('value'))
+        var min_score = (isNaN(content.minscorefield.get('value')) 
+                      || content.minscorefield.get('value') <= 0 
+                      || content.minscorefield.get('value') > 100)
                        ? 80 : content.minscorefield.get('value');
 
         return {
