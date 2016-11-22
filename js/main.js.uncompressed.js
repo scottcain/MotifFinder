@@ -626,6 +626,7 @@ return declare( ActionBarDialog, {
         var flexcontainer=dom.create('div',{className:'flex-container'},container);
         var radiocolone =dom.create('div',{className: 'colone'},flexcontainer);
         var radiocoltwo =dom.create('div',{className: 'coltwo'},flexcontainer); 
+        var radiocolthr =dom.create('div',{className: 'colthr'},flexcontainer);
 
 
         function makeRadio( args, parent ) {
@@ -634,20 +635,38 @@ return declare( ActionBarDialog, {
             dom.create('span', {innerHTML: args.label + "</br>" }, label);
             return radio;
         }
-        for (var i =0;i<Math.round(content.matrices.length/2+1) ; i++) {
+        for (var i =0;i<Math.round(content.matrices.length/3+1) ; i++) {
             var name = content.matrices[i].name;
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocolone);
         }
-        for (var i = Math.round(content.matrices.length/2 +1); i<content.matrices.length; i++) {
+        for (var i = Math.round(content.matrices.length/3 +1); i<Math.round(2*content.matrices.length/3); i++) {
             var name = content.matrices[i].name;
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocoltwo);
         }
+        for (var i = Math.round(2*content.matrices.length/3 +1); i<content.matrices.length; i++) {
+            var name = content.matrices[i].name;
+            content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocolthr);
+        }
 
-        var minscoreDiv = dom.create('div', {className: 'section'}, container);
+        var minscoreDiv = dom.create('div', {className: 'section',style:{position: 'relative'}}, radiocolone);
 
-        content.minscorefield = new dTextBox( {name: 'minscore', label: 'minscore', style: 'width: 4em;'}, minscoreDiv  ); 
+        content.minscorefield = new dTextBox( {name: 'minscore',style: 'width: 6em;',placeholder:'min score'}, minscoreDiv  ); 
         //minscoreDiv.appendChild(content.minscorefield.domNode);
         dom.create( "label", {"for" : "minscore", innerHTML: "Minimum score"}, minscoreDiv);
+
+        //text fields for custom matrix
+        var customMatrixDiv = dom.create('div', {className: 'section',style:{position: 'relative'}}, radiocoltwo); //to make it on the right side of the window
+        var customMatrixNameDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
+        var customMatrixADiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
+        var customMatrixCDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
+        var customMatrixGDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
+        var customMatrixTDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
+        content.custommatrixnamefield = new dTextBox( {name: 'custommatrixname',style: 'width: 14em;',placeholder:'custom name'}, customMatrixNameDiv );
+        content.custommatrixafield    = new dTextBox( {name: 'custommatrixa',style: 'width: 15em;',placeholder:'A:0,12,0,4...'}, customMatrixADiv );
+        content.custummatrixcfield    = new dTextBox( {name: 'custummatrixc',style: 'width: 15em;',placeholder:'C:12,0,0,6...'}, customMatrixCDiv);
+        content.custommatrixgfield    = new dTextBox( {name: 'custommatrixg',style: 'width: 15em;',placeholder:'G:0,0,12,0...'}, customMatrixGDiv);
+        content.custommatrixtfield    = new dTextBox( {name: 'custommatrixt',style: 'width: 15em;',placeholder:'T:0,0,0,2...'}, customMatrixTDiv);
+
 
         return container;
     },
