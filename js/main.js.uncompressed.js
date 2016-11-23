@@ -635,27 +635,29 @@ return declare( ActionBarDialog, {
             dom.create('span', {innerHTML: args.label + "</br>" }, label);
             return radio;
         }
-        for (var i =0;i<Math.round(content.matrices.length/3+1) ; i++) {
+        for (var i =0;i<Math.round(content.matrices.length/3+0.5) ; i++) {
             var name = content.matrices[i].name;
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocolone);
         }
-        for (var i = Math.round(content.matrices.length/3 +1); i<Math.round(2*content.matrices.length/3); i++) {
+        for (var i = Math.round(content.matrices.length/3 +0.5); i<Math.round(2*content.matrices.length/3 +0.5); i++) {
             var name = content.matrices[i].name;
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocoltwo);
         }
-        for (var i = Math.round(2*content.matrices.length/3 +1); i<content.matrices.length; i++) {
+        for (var i = Math.round(2*content.matrices.length/3 +0.5); i<content.matrices.length; i++) {
             var name = content.matrices[i].name;
             content.matrixbutton[name] = makeRadio( {name: 'matrix', value: name, label: name}, radiocolthr);
         }
 
+        console.log(content.matrices.length);
+
         var minscoreDiv = dom.create('div', {className: 'section',style:{position: 'relative'}}, radiocolone);
 
-        content.minscorefield = new dTextBox( {name: 'minscore',style: 'width: 6em;',placeholder:'min score'}, minscoreDiv  ); 
+        content.minscorefield = new dTextBox( {name: 'minscore',style: 'width: 6em;',placeholder:'min score %'}, minscoreDiv  ); 
         //minscoreDiv.appendChild(content.minscorefield.domNode);
-        dom.create( "label", {"for" : "minscore", innerHTML: "Minimum score"}, minscoreDiv);
+        //dom.create( "label", {"for" : "minscore", innerHTML: "Minimum score"}, minscoreDiv);
 
         //text fields for custom matrix
-        var customMatrixDiv = dom.create('div', {className: 'section',style:{position: 'relative'}}, radiocoltwo); //to make it on the right side of the window
+        var customMatrixDiv = dom.create('div', {className: 'section',style:{position: 'relative'}}, radiocolthr); //to make it on the right side of the window
         var customMatrixNameDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
         var customMatrixADiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
         var customMatrixCDiv = dom.create('div', {className: 'section',style:{position: 'left'}}, customMatrixDiv);
